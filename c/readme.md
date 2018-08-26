@@ -22,6 +22,7 @@ Or you can set the timescale (e.g, -T 1ns) with -T. Note the timescale should be
 Great idea to build a script with all the "standard" settings for a project:
 
    #!/bin/bash
+
    exec la2vcd -W -F 50 -b 57600 -t 129 -c 3 -r 1 -n 256 -o "$1"
 
 Just as an example.
