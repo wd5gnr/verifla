@@ -1,0 +1,17 @@
+#!/bin/bash
+LADIR="./verifla"
+if [ -z "$1" ]
+then
+  FN="example_icestick"
+else
+  FN="$1"
+fi
+if ! yosys -p "read_verilog $YOSYS_OPTS -noautowire \"$FN.v\" ; hierarchy -libdir . ; hierarchy -libdir $LADIR ; synth_ice40 -blif $FN.blif"
+then exit
+fi
+if ! arachne-pnr $ARACHNE_OPTS -d 1k -p $FN.pcf  -o $FN.txt $FN.blif
+then exit
+fi
+icepack $FN.txt $FN.bin
+iceprog $FN.bin
+

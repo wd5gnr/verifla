@@ -1,0 +1,81 @@
+// Because at least some FPGAs don't have block RAM that
+// can handle this, I've replaced it with a lighterweight
+// version. However, this is the original if you want it
+// for some reason
+/*
+20180814-1600
+- LA_MEM_CLEAN_BEFORE_RUN is not used here anymore;
+LA_INIT_MEM_AT_RESET is used instead.
+20180808-1700
+- ifdef LA_MEM_CLEAN_BEFORE_RUN
+Author: Laurentiu Duca
+License: GNU GPL
+*/
+
+module memory_of_verifla (
+  clk, rst_l, //clkb, 
+  addra, wea, dina, addrb, doutb
+);
+
+`include "common_internal_verifla.v"
+
+input rst_l;
+input clk;
+//input clkb;
+input wea;
+input [LA_MEM_ADDRESS_BITS-1:0] addra;
+input [LA_MEM_ADDRESS_BITS-1:0] addrb;
+output [LA_MEM_WORDLEN_BITS-1:0] doutb;
+input [LA_MEM_WORDLEN_BITS-1:0] dina;
+
+reg [LA_MEM_WORDLEN_BITS-1:0] mem[LA_MEM_LAST_ADDR:0];
+`ifdef DEBUG_LA
+reg [LA_DATA_INPUT_WORDLEN_BITS-1:0] m1[LA_MEM_LAST_ADDR:0];
+reg [LA_IDENTICAL_SAMPLES_BITS-1:0] m2[LA_MEM_LAST_ADDR:0];
+`endif
+
+//assign doutb = mem[addrb];
+// This works too as a consequence of send_capture_of_verifla architecture.
+reg [LA_MEM_WORDLEN_BITS-1:0] doutb;
+always @(posedge clk or negedge rst_l)
+if(~rst_l)
+	doutb <= LA_MEM_EMPTY_SLOT;
+else
+	doutb <= mem[addrb];
+
+`ifndef LA_INIT_MEM_AT_RESET
+always @(posedge clk)
+begin
+		if(wea) begin
+			mem[addra] <= dina;
+			//m1[addra] <= dina[LA_DATA_INPUT_WORDLEN_BITS-1:0];
+			//m2[addra] <= dina[LA_MEM_WORDLEN_BITS-1:LA_DATA_INPUT_WORDLEN_BITS];			
+		end
+end
+`else
+//reg [LA_MEM_WORDLEN_BITS-1:0] i;
+always @(posedge clk or negedge rst_l)
+begin
+	if(~rst_l) begin:RESET_SECTON
+			integer i;
+			for(i=0; i<=LA_MEM_LAST_ADDR; i=i+1)
+				mem[i] <= LA_MEM_EMPTY_SLOT;
+	end else begin
+		if(wea) begin
+			mem[addra] <= dina;
+			//m1[addra] <= dina[LA_DATA_INPUT_WORDLEN_BITS-1:0];
+			//m2[addra] <= dina[LA_MEM_WORDLEN_BITS-1:LA_DATA_INPUT_WORDLEN_BITS];
+		end
+	end
+end
+`endif
+
+initial begin:INIT_SECTION
+	integer i;
+	for(i=0; i<=LA_MEM_LAST_ADDR; i=i+1)
+		mem[i] <= LA_MEM_EMPTY_SLOT;
+	//$readmemh("mem2018.mif", mem);	
+end
+
+endmodule
+

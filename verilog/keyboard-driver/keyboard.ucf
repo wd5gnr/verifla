@@ -1,0 +1,28 @@
+#NET "switch[0]" LOC="L13";
+#NET "switch[1]" LOC="L14";
+#NET "switch[2]" LOC="H18";
+#NET "switch[3]" LOC="N17";
+
+NET "clk" LOC = "C9";
+NET "reset" LOC = "L13";
+
+NET "kbd_data_line" LOC = "G13";
+NET "kbd_clk" LOC = "G14";
+
+#NET "J1_0" LOC = "N15"; 
+#NET "J1_1" LOC = "N14"; 
+#NET "J1_2" LOC = "E15"; 
+#NET "J1_3" LOC = "V7";
+
+#leds
+NET "kbd_key[0]" LOC="D4";
+NET "kbd_key[1]" LOC="C3";
+NET "kbd_key[2]" LOC="D6";
+NET "kbd_key[3]" LOC="E6";
+NET "kbd_key[4]" LOC="D13";
+NET "kbd_key[5]" LOC="A7";
+NET "kbd_key[6]" LOC="G9";
+NET "kbd_key[7]" LOC="A8";
+
+NET "uart_REC_dataH" LOC = "R13";
+NET "uart_XMIT_dataH" LOC = "P13";
