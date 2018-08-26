@@ -1,3 +1,5 @@
+/* Convert VeriFla captures to VCD */
+/* Al Williams */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,6 +20,13 @@
 #define SIZE 256
 #define COUNT (SIZE*(REPEAT+CAPTURE))
 
+/*
+Some basic terms:
+Each capture has a certain number of capture bytes and a certain number of repeat bytes.
+A complete set of capture bytes and the associated repeat bytes are a line
+ */
+
+
 void help()
 {
   fprintf(stderr,"Usage: la2vcd [-B] [-W] [-F frequency] [-T timescale] -b baud, -t trigger_pos -c cap_width, -r repeat_width, -n samples -o vcd_file port_name\n");
@@ -29,6 +38,7 @@ void help()
   exit(1);
 }
 
+// Convert a word to a number of bits
 char *binary(uint64_t v, unsigned int bits)
 {
   static char buffer[65];
@@ -44,7 +54,7 @@ char *binary(uint64_t v, unsigned int bits)
 }
 
   
-  
+// Get a capture from the buffer with a certain width starting at a particular address
 uint64_t getbin(unsigned width, unsigned char *buf, unsigned base)
 {
   uint64_t v=0;
@@ -53,6 +63,7 @@ uint64_t getbin(unsigned width, unsigned char *buf, unsigned base)
   return v;
 }
 
+// Read a line -- that is, capture and repeat count
 void getbline(unsigned w1, unsigned w2, char *buf, unsigned base, uint64_t *v1, uint64_t *v2 )
 {
   
@@ -60,9 +71,11 @@ void getbline(unsigned w1, unsigned w2, char *buf, unsigned base, uint64_t *v1, 
       *v2=getbin(w2,buf,base);
 }
 
+// Are we going to emit bytes, the whole thing, or both (3)
 int bflag=3; // bytes=1, words=2
 
 
+// Write a VCD output for a line
 void writeline(FILE *f,uint64_t *t,uint64_t rpt, uint64_t data, int trigger, int capwidth)
 {
   unsigned int i;
@@ -84,6 +97,7 @@ void writeline(FILE *f,uint64_t *t,uint64_t rpt, uint64_t data, int trigger, int
 }
 
 
+// We can only handle 64 bit integers
 void sizerr(const char *msg)
 {
   fprintf(stderr,"Error: %s exceeds 64 bits\n",msg);
@@ -123,46 +137,46 @@ int main(int argc, char *argv[])
       help();
     }
   
-  
+  // process command line
   while ((copt=getopt(argc,argv,"DF:T:BWb:c:r:n:o:t:")) != -1)
     switch (copt)
       {
       case 'D':
-	debugging=1;
+	debugging=1;  // undocumented debug flag
 	break;
       case 'T':
-	timescale=optarg;
+	timescale=optarg;   // set timescale
 	break;
-      case 'F':
+      case 'F':   // or set frequency
 	freq=atof(optarg);
 	freq=1.0/(freq*.000002);  // double plus microseconds to picoseconds
 	break;
 	
-      case 'B':
+      case 'B':   // bytes only
 	bflag=1;
 	break;
-      case 'W':
+      case 'W':   // whole capture only
 	bflag=2;
 	break;
 	
-      case 'b':
+      case 'b':   // baud rate
 	baud=atoi(optarg);
 	break;
-      case 'c':
+      case 'c':   // set capture width in bytes
 	capwidth=atoi(optarg);
 	if (capwidth>sizeof(uint64_t)) sizerr("Capture width");
 	break;
-      case 'r':
+      case 'r':  // set repeat count in bytes
 	repwidth=atoi(optarg);
 	if (repwidth>sizeof(uint64_t)) sizerr("Replacement width");
 	break;
-      case 'n':
+      case 'n':   // set number of capture lines 
 	caplength=atoi(optarg);
 	break;
-      case 'o':
+      case 'o':  // VCD output file
 	vcdfile=optarg;
 	break;
-      case 't':
+      case 't':   // set trigger position (lines)
 	trigpos=atoi(optarg);
 	break;
 	
@@ -172,6 +186,7 @@ int main(int argc, char *argv[])
 	break;
       }
   
+  // figure out how many bytes we have
   count=(capwidth+repwidth)*caplength;
   if (count<=0)
     {
@@ -181,6 +196,7 @@ int main(int argc, char *argv[])
       exit(3);
     }
 
+  // make our buffer
   workbuf=(char *)malloc(count);
   if (!workbuf)
     {
@@ -188,6 +204,7 @@ int main(int argc, char *argv[])
       exit(4);
     }
   
+  // open the vcd file
   if (vcdfile)
     vfile=fopen(vcdfile,"w");
   else
@@ -198,7 +215,7 @@ int main(int argc, char *argv[])
       exit(6);
     }
   
-	
+  // Serial port	
   err=sp_get_port_by_name(argv[optind],&port);
   if (err==SP_OK)
     err=sp_open(port,SP_MODE_READ_WRITE);
@@ -207,7 +224,7 @@ int main(int argc, char *argv[])
       fprintf(stderr,"Can't open port %s\n",argv[1]);
       exit(2);
     }
-  sp_set_baudrate(port,BAUD); // TODO: Command line option
+  sp_set_baudrate(port,BAUD); 
   // write reset
   i=USERCMD_RESET;
   sp_blocking_write(port,&i,1,100);
@@ -241,6 +258,7 @@ int main(int argc, char *argv[])
     }
   
   fprintf(stderr,"Writing vcd file\n");
+  // produce header
   fprintf(vfile,"$version la2vcd 0.1 $end\n");
   
   time(&rawtime);
@@ -250,6 +268,7 @@ int main(int argc, char *argv[])
   if (freq!=-1) fprintf(vfile,"%.0fps",freq);
   if (freq==-1) fprintf(vfile," %s",timescale);
   fprintf(vfile," $end\n");
+  // send data definition
   fprintf(vfile,"$scope module CAPTURE $end\n");
   // Need to have a definition file or something for this but for now...
   fprintf(vfile,"$var wire 1 ! clk $end\n");
@@ -259,20 +278,21 @@ int main(int argc, char *argv[])
   
   fprintf(vfile,"$upscope $end\n");
   fprintf(vfile,"$enddefinitions $end\n");
-  
+  // Now we are ready to go  
   uint64_t  t=0;
   unsigned linewidth=capwidth+repwidth;
   uint64_t rct=0;
   uint64_t data=0;
   unsigned j;
-
+  // Initialize variables
   fprintf(vfile,"$dumpvars\n0!\n0^\n");
   if (bflag&2) fprintf(vfile,"bx #\n");
   if (bflag&1) for (i=0;i<capwidth;i++) fprintf(vfile,"bx %c\n",'&'+i);
   fprintf(vfile," $end\n");
   uint64_t tail0,tail;
+  // get the queue tail
   getbline(capwidth,repwidth,workbuf,(caplength-1)*linewidth,&tail,&rct); // rct not used here
-  tail0=tail++;
+  tail0=tail++;  // point to oldest part of buffer
   while (tail!=trigpos)
     {
       // output oldest part of buffer
@@ -281,6 +301,7 @@ int main(int argc, char *argv[])
       writeline(vfile,&t,rct,data,0,capwidth);
       tail++;
     }
+  // now go back and do the rest of the buffer
   tail=0;
   while (tail<=tail0)
     {
@@ -290,7 +311,7 @@ int main(int argc, char *argv[])
       writeline(vfile,&t,rct,data,0,capwidth);
       tail++;
     }
-  // now do the rest
+  // now do the trigger and the rest
   for (i=trigpos;i<caplength-1;i++)
     {
       getbline(capwidth,repwidth,workbuf,i*linewidth,&data,&rct);
@@ -298,9 +319,7 @@ int main(int argc, char *argv[])
       writeline(vfile,&t,rct,data,i==trigpos,capwidth);
     }
   
-
-
-  
+  // close up shop and we are out of here
   if (vfile != stdout) fclose(vfile);
   if (workbuf) free(workbuf);
 }

@@ -66,9 +66,13 @@ module top(input clk, output LED1, output LED2, output LED3,
   WAIT2 - wait for timer to expire, timer=250, runs=0, goto WAIT0
  */
 
+// One hot encoding
+   localparam WAIT0 = 3'b001;
+   localparam WAIT1 = 3'b010;
+   localparam WAIT2 = 3'b100;
    
 
-   reg [2:0] state=1;
+   reg [2:0] state=WAIT0;
    reg 	     led_1;
    reg [3:0] runs=0;
 
@@ -81,42 +85,45 @@ module top(input clk, output LED1, output LED2, output LED3,
    assign LED4=count[15];
    assign LED5=lareset;
 
+    
+
+
    always @(posedge iclk)
      begin
 	count<=count+1;
 	if (ctimer!=0 && count==0) ctimer<=ctimer-1;
 	case (state)
-	     3'b001:
+	     WAIT0:
 	       begin
 		  if (ctimer==0)
 		    begin
 		       led_1<=1'b1;
 		       ctimer<=100;
-		       state<=runs==10?3'b100:3'b010;
+		       state<=runs==10?WAIT2:WAIT1;
 		    end
 	       end
-   	     3'b010:
+   	     WAIT1:
 	       begin
 		  if (ctimer==0)
 		    begin
 		       led_1<=1'b0;
 		       ctimer<=250;
 		       runs<=runs+1;
-		       state<=3'b001;
+		       state<=WAIT0;
 		    end
 	       end
-	  3'b100:
+	  WAIT2:
 	    begin
 	       if (ctimer==0)
 		 begin
 		    ctimer<=250;
 		    runs<=0;
-		    state<=3'b001;
+		    state<=WAIT0;
 		 end
 	    end
 	  default:
 	    begin
-	       state<=1;  // never gets here we hope
+	       state<=WAIT0;  // never gets here we hope
 	    end
 	endcase // case (state)
      end
