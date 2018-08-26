@@ -1,3 +1,4 @@
+# Verifla
 This is a fork of OpenVerifla (https://opencores.org/project/openverifla) that tries to do a few things:
 
 1) Document some of the settings a bit better
@@ -17,13 +18,13 @@ spews out of the FPGA, the JAVA code can not sync to it.
 with Icestorm tools (at least) setting memory to 256 bytes and the trigger position to
 128 causes a hang. Trigger positions at 127 and 129 are fine.
 
-Possible Enhancements
+# Possible Enhancements
 1) Uart clock vs Sample clock (Uart clock >> Sample clock)
 2) Clock Enable for sample clock (done)
 3) Change post trigger samples to do post trigger memory words (or document to set huge #)
 4) Java: Pick up Verilog file from template
 
-=== Quick Start
+# Quick Start
 1. Link or copy the verifla directory (the one under verilog) to your project directory
 2. Copy config_verifla.v.template to your working directory and rename it to config_verifla.v
 3. Make sure your Verilog tool will look in the verifla directory as a library
@@ -42,7 +43,7 @@ Possible Enhancements
 * triggered - digital output showing LA is triggered
 8. Once running you can use the original Java program to create a .v file you will need to simulate or the C program (la2vcd) to create a .vcd you can read using a waveform viewer (like GTKWave)
 
-=== Notes about using GTKWave
+# Notes about using GTKWave
 The C program creates a simple dump that has the entire capture data and also each byte captured. You can supress the bytes (-W) or the aggregate (-B) if you like. However, you really want to have the signals broken back out like they are in your code.
 
 Suppose you have 16-bits of data like this:
