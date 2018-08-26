@@ -1,4 +1,4 @@
-This is a fork of OpenVerifla that tries to do a few things:
+This is a fork of OpenVerifla (https://opencores.org/project/openverifla) that tries to do a few things:
 
 1) Document some of the settings a bit better
 2) Fix a bug where samples that changed on one clock were not handled properly
