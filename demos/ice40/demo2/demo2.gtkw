@@ -1,0 +1,57 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Mon Aug 27 05:33:17 2018
+[*]
+[dumpfile] "/home/alw/fpga/verifla/demos/ice40/demo2/demo2.vcd"
+[dumpfile_mtime] "Mon Aug 27 05:30:17 2018"
+[dumpfile_size] 16279
+[savefile] "/home/alw/fpga/verifla/demos/ice40/demo2/demo2.gtkw"
+[timestart] 0
+[size] 1919 1021
+[pos] 1908 -1
+*-16.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 310
+[signals_width] 186
+[sst_expanded] 1
+[sst_vpaned_height] 274
+@28
+CAPTURE.clk
+CAPTURE.triggered
+@800022
+CAPTURE.capdata[15:0]
+@c00022
+#{ctimer} (0)CAPTURE.capdata[15:0] (1)CAPTURE.capdata[15:0] (2)CAPTURE.capdata[15:0] (3)CAPTURE.capdata[15:0] (4)CAPTURE.capdata[15:0] (5)CAPTURE.capdata[15:0] (6)CAPTURE.capdata[15:0] (7)CAPTURE.capdata[15:0]
+@28
+(0)CAPTURE.capdata[15:0]
+(1)CAPTURE.capdata[15:0]
+(2)CAPTURE.capdata[15:0]
+(3)CAPTURE.capdata[15:0]
+(4)CAPTURE.capdata[15:0]
+(5)CAPTURE.capdata[15:0]
+(6)CAPTURE.capdata[15:0]
+(7)CAPTURE.capdata[15:0]
+@1401200
+-group_end
+@c00022
+#{runs} (8)CAPTURE.capdata[15:0] (9)CAPTURE.capdata[15:0] (10)CAPTURE.capdata[15:0] (11)CAPTURE.capdata[15:0]
+@28
+(8)CAPTURE.capdata[15:0]
+(9)CAPTURE.capdata[15:0]
+(10)CAPTURE.capdata[15:0]
+(11)CAPTURE.capdata[15:0]
+@1401200
+-group_end
+@28
++{led1} (12)CAPTURE.capdata[15:0]
+@c00028
+#{state} (13)CAPTURE.capdata[15:0] (14)CAPTURE.capdata[15:0] (15)CAPTURE.capdata[15:0]
+@28
+(13)CAPTURE.capdata[15:0]
+(14)CAPTURE.capdata[15:0]
+(15)CAPTURE.capdata[15:0]
+@1401200
+-group_end
+@1001200
+-group_end
+[pattern_trace] 1
+[pattern_trace] 0

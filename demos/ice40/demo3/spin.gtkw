@@ -1,0 +1,45 @@
+[*]
+[*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
+[*] Mon Aug 27 05:28:01 2018
+[*]
+[dumpfile] "/home/alw/fpga/verifla/demos/ice40/demo3/spin.vcd"
+[dumpfile_mtime] "Mon Aug 27 05:26:04 2018"
+[dumpfile_size] 426017219
+[savefile] "/home/alw/fpga/verifla/demos/ice40/demo3/spin.gtkw"
+[timestart] 2320000000
+[size] 1897 2113
+[pos] -1 -1
+*-32.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[sst_width] 310
+[signals_width] 186
+[sst_expanded] 1
+[sst_vpaned_height] 654
+@28
+CAPTURE.clk
+CAPTURE.triggered
+@800022
+CAPTURE.capdata[15:0]
+@c00022
+#{ctimer} (0)CAPTURE.capdata[15:0] (1)CAPTURE.capdata[15:0] (2)CAPTURE.capdata[15:0] (3)CAPTURE.capdata[15:0] (4)CAPTURE.capdata[15:0] (5)CAPTURE.capdata[15:0] (6)CAPTURE.capdata[15:0] (7)CAPTURE.capdata[15:0]
+@28
+(0)CAPTURE.capdata[15:0]
+(1)CAPTURE.capdata[15:0]
+(2)CAPTURE.capdata[15:0]
+(3)CAPTURE.capdata[15:0]
+(4)CAPTURE.capdata[15:0]
+(5)CAPTURE.capdata[15:0]
+(6)CAPTURE.capdata[15:0]
+(7)CAPTURE.capdata[15:0]
+@1401200
+-group_end
+@c00028
+#{state} (14)CAPTURE.capdata[15:0] (15)CAPTURE.capdata[15:0]
+@28
+(14)CAPTURE.capdata[15:0]
+(15)CAPTURE.capdata[15:0]
+@1401200
+-group_end
+@1001200
+-group_end
+[pattern_trace] 1
+[pattern_trace] 0

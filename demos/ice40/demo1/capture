@@ -1,0 +1,5 @@
+#!/bin/bash
+# You can use this to get a VCD
+# You will need to compile la2vcd, of course
+# and set your serial port, etc.
+../../../c/la2vcd -F 12 -b 9600 -t 129 -c 2 -r 1 -n 256 -o demo1.vcd /dev/ttyUSB1
