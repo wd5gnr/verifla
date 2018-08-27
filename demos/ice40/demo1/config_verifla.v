@@ -54,7 +54,7 @@ parameter LA_TRIGGER_MATCH_MEM_ADDR=129;
 // You would just get a repeat count of 20 on the trigger word.
 // If you like, set this value to something very large and you'll better use memory
 // Be sure the number of bits is enough to hold the count
-parameter LA_MAX_SAMPLES_AFTER_TRIGGER_BITS=16;  // was 24
+parameter LA_MAX_SAMPLES_AFTER_TRIGGER_BITS=16;  
 parameter    LA_MAX_SAMPLES_AFTER_TRIGGER=30000;
 // Because the circular buffer and the post trigger buffer may not be full
 // You may want to let the LA write a known value to the buffer before starting

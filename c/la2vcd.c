@@ -13,12 +13,7 @@
 #define USERCMD_RESET 0
 #define USERCMD_RUN 1
 
-// Need to make command line options
 #define BAUD 9600
-#define CAPTURE 2
-#define REPEAT 1
-#define SIZE 256
-#define COUNT (SIZE*(REPEAT+CAPTURE))
 
 /*
 Some basic terms:
