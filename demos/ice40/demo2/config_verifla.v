@@ -15,7 +15,7 @@ parameter T2_div_T1_div_2 = CLOCK_FREQUENCY / (BAUDRATE * 16 * 2);
 parameter BAUD_COUNTER_SIZE = 15;
 
 // ********* Data Setup
-// Number of data inputs (must be a multile of 8)
+// Number of data inputs (must be a multiple of 8)
 parameter LA_DATA_INPUT_WORDLEN_BITS=16;
 
 // ******** Trigger

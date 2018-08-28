@@ -2,7 +2,7 @@
 LADIR="./verifla"
 if [ -z "$1" ]
 then
-  FN="example_icestick"
+  FN="demo"
 else
   FN="$1"
 fi

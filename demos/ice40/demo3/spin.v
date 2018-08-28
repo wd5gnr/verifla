@@ -21,7 +21,8 @@ module top(input clk, output LED1, output LED2, output LED3,
    top_of_verifla verifla(.clk(clk),.cqual(1'b1),.rst_l(lareset), .sys_run(1'b0),
 			  .data_in({ctimer,6'b0,state}),   
 			  .uart_XMIT_dataH(RS232_Tx),
-			  .uart_REC_dataH(RS232_Rx));
+			  .uart_REC_dataH(RS232_Rx)
+			 );
    
    
 // generate POR reset for logic analyzer

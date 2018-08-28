@@ -2,7 +2,7 @@
 LADIR="../../../verilog/verifla"
 if [ -z "$1" ]
 then
-  FN="example_icestick"
+  FN="spin"
 else
   FN="$1"
 fi

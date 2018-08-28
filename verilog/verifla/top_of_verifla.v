@@ -11,20 +11,13 @@ revision date: 2007/Jul/4; author: Laurentiu DUCA
 */
 
 
-module top_of_verifla(clk, cqual, rst_l, sys_run, data_in,
-				// Transceiver
-				uart_XMIT_dataH, uart_REC_dataH, armed, triggered
-				);
+module top_of_verifla(input clk, input cqual=1'b1, input rst_l, input sys_run=1'b0, 
+		      input [LA_DATA_INPUT_WORDLEN_BITS-1:0] data_in,
+		      output uart_XMIT_dataH, input uart_REC_dataH, 
+		      output armed, output triggered, input trigqual=1'b1,
+		      input exttrig=0 );
 				
 `include "config_verifla.v"
-
-input clk, cqual, rst_l, sys_run;
-   
-input [LA_DATA_INPUT_WORDLEN_BITS-1:0] data_in;
-output uart_XMIT_dataH;
-input uart_REC_dataH;
-output armed, triggered;
-   
 
 // App. specific.
 wire [LA_MEM_WORDLEN_BITS-1:0] mem_port_A_data_in, mem_port_B_dout;
@@ -66,7 +59,7 @@ computer_input_of_verifla ci (clk, rst_l,
 monitor_of_verifla mon (clk, cqual, combined_reset_low,
 		mon_run, data_in, 
 		mem_port_A_address, mem_port_A_data_in, mem_port_A_wen,
-			ack_sc_run, sc_done, sc_run,armed,triggered);
+			ack_sc_run, sc_done, sc_run,armed,triggered,trigqual,exttrig);
 // send_capture_of_verifla must use the same reset as the uart.
 send_capture_of_verifla sc (clk, rst_l, baud_clk_posedge,
 	sc_run, ack_sc_run, sc_done,

@@ -6,8 +6,21 @@ This is a fork of OpenVerifla (https://opencores.org/project/openverifla) that t
 3) Add synchronous memory that is easier for some tools to infer
 4) Some minor cleanups and plans for enhancments
 5) C tool to read output and generate VCD directly (see C directory for build instructions)
-6) Adds clock enable/qualifer
+6) Adds clock enable/qualifer (defaults to 1 so you don't need to specify it if you don't use it)
 7) Adds armed and trigger outputs
+8) Adds trigger qualifier (must be 1 -- set by default -- for internal trigger to work)
+9) Adds exttrig (default 0) if you want your own trigger logic -- does not respect
+   trigger qualifier as we assume you could do that yourself if you wanted to
+
+Note on 6, 7, 8, and 9: The armed output goes high when the monitor state machine is running.
+The triggered output goes high when something triggers the state machine. The data
+sample clock only reads a sample when the cqual, the clock qualifier, is 1 (the default).
+So if you know your circuit only does interesting things when counter==0 for example
+you can set that as the clock qualifer. You can drive exttrig to 1 if you want to
+trigger with your own complex logic. For example, you could have a state machine
+read serial data and trigger when you see a certain serial character. For the internal
+trigger, you can inhibit it by setting trigqual to 0 (the default is 1). For example, you
+might only drive it high after some precondition to prevent an early trigger.
 
 The PDF attached has some good information on it. However, a few things to note:
 

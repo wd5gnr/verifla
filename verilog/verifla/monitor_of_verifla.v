@@ -4,7 +4,9 @@ file: monitor_of_verifla.v
 license: GNU GPL
 Revision history
 
-20188023
+20180827
+  - Added trigger enable and external trigger
+20180823
  - Updates to 2.2 from upstream (Al Williams)
  - However, adding mon_run_reg changes caused LA to be unresponsive on Lattice iCe40 w/Icestorm
 20180820 
@@ -30,7 +32,8 @@ revision date: 2007/Jul/4; author: Laurentiu DUCA
 module monitor_of_verifla (clk, cqual, rst_l, 
 	mon_run, data_in, 
 	mem_port_A_address, mem_port_A_data_in, mem_port_A_wen,
-			   ack_sc_run, sc_done, sc_run, armed, triggered);
+			   ack_sc_run, sc_done, sc_run, armed, triggered,
+			   trigqual, exttrig);
    
 	
 `include "config_verifla.v"
@@ -51,6 +54,8 @@ parameter
 input clk, cqual, rst_l;
 input [LA_DATA_INPUT_WORDLEN_BITS-1:0] data_in;
 input mon_run, ack_sc_run, sc_done;
+input trigqual, exttrig;
+   
 // output
 output [LA_MEM_ADDRESS_BITS-1:0] mem_port_A_address;
 output [LA_MEM_WORDLEN_BITS-1:0] mem_port_A_data_in;
@@ -231,19 +236,12 @@ begin
 	MON_STATE_WAIT_TRIGGER_MATCH:
 	begin
 		// circular queue
-		if((mon_current_data_in & LA_TRIGGER_MASK) != 
-			(LA_TRIGGER_VALUE & LA_TRIGGER_MASK))
+	        if(exttrig==1'b0 && (trigqual==1'b0 || (mon_current_data_in & LA_TRIGGER_MASK) != 
+			(LA_TRIGGER_VALUE & LA_TRIGGER_MASK)))
 		begin
 			next_mon_state = MON_STATE_WAIT_TRIGGER_MATCH;
 			mem_port_A_wen = 1;
-/*
-			mem_port_A_address = data_in_changed ? 
-											(last_mem_addr_before_trigger ? LA_MEM_FIRST_ADDR : one_plus_mon_write_address) :
-											(not_maximum_mon_clones_nr ? mon_write_address : 
-												(last_mem_addr_before_trigger ? LA_MEM_FIRST_ADDR : one_plus_mon_write_address));
-*/
-// this is a little simplier than the original
-		   mem_port_A_address = (data_in_changed || ~not_maximum_mon_clones_nr)?
+		        mem_port_A_address = (data_in_changed || ~not_maximum_mon_clones_nr)?
 					(last_mem_addr_before_trigger?LA_MEM_FIRST_ADDR : one_plus_mon_write_address):mon_write_address;
 		   
 
