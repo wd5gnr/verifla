@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.66 (w)1999-2015 BSI
-[*] Mon Aug 27 05:28:01 2018
+[*] Tue Aug 28 05:48:33 2018
 [*]
 [dumpfile] "/home/alw/fpga/verifla/demos/ice40/demo3/spin.vcd"
-[dumpfile_mtime] "Mon Aug 27 05:26:04 2018"
-[dumpfile_size] 426017219
+[dumpfile_mtime] "Tue Aug 28 05:18:37 2018"
+[dumpfile_size] 319757518
 [savefile] "/home/alw/fpga/verifla/demos/ice40/demo3/spin.gtkw"
-[timestart] 2320000000
-[size] 1897 2113
+[timestart] 79530000000
+[size] 3828 2113
 [pos] -1 -1
-*-32.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-34.000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [sst_width] 310
 [signals_width] 186
 [sst_expanded] 1
@@ -32,12 +32,13 @@ CAPTURE.capdata[15:0]
 (7)CAPTURE.capdata[15:0]
 @1401200
 -group_end
-@c00028
+@c02029
+^1 /home/alw/fpga/verifla/demos/ice40/demo3/gtkwavefilter.txt
 #{state} (14)CAPTURE.capdata[15:0] (15)CAPTURE.capdata[15:0]
 @28
 (14)CAPTURE.capdata[15:0]
 (15)CAPTURE.capdata[15:0]
-@1401200
+@1401201
 -group_end
 @1001200
 -group_end

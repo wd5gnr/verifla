@@ -46,7 +46,7 @@ with Icestorm tools (at least) setting memory to 256 bytes and the trigger posit
 6. Write your verilog in the project directory.
 7. Create a top_of_verifla module. Here are the signals:
 * clk - Clock
-* cqual - Qualifier for data capture clock (UART and other things use clk alone). If you don't want a qualifer, just set to 1'b1. IMPORTANT: You do need to set this to something.
+* cqual - Qualifier for data capture clock (UART and other things use clk alone). If you don't want a qualifer, just set to 1'b1 (which is the default).
 * rst_l - Active low reset.
 * sys_run - High to arm logic analyzer. If you only want to arm from the PC, set to 1'b0.
 * data_in - Your inputs. Group together like {led3, led2, led1, led0, count[3:0]}.
@@ -54,6 +54,9 @@ with Icestorm tools (at least) setting memory to 256 bytes and the trigger posit
 * uart_REC_dataH - Your RS232 receive line
 * armed - digital output showing LA is armed
 * triggered - digital output showing LA is triggered
+* trigqual - Must be set to 1 to allow internal trigger to occur (default is 1)
+* exttrig - Set to 1 to force a trigger (default is 0; does not respect trigqual)
+
 8. Once running you can use the original Java program to create a .v file you will need to simulate or the C program (la2vcd) to create a .vcd you can read using a waveform viewer (like GTKWave)
 
 # Notes about using GTKWave
