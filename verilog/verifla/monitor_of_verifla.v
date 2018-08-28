@@ -72,7 +72,8 @@ reg armed, triggered;
 reg [MON_STATES_BITS-1:0] mon_state, next_mon_state;
 reg [LA_MAX_SAMPLES_AFTER_TRIGGER_BITS-1:0] 
 	next_mon_samples_after_trigger, mon_samples_after_trigger;
-reg [LA_MEM_ADDRESS_BITS-1:0] next_mon_write_address, mon_write_address, old_mon_write_address, last_tail,next_last_tail;
+   reg [LA_MEM_ADDRESS_BITS-1:0] 	    next_mon_write_address, mon_write_address, old_mon_write_address;
+//, last_tail,next_last_tail;
 reg [LA_MEM_ADDRESS_BITS-1:0] next_bt_queue_tail_address, bt_queue_tail_address;
 reg [LA_DATA_INPUT_WORDLEN_BITS-1:0] mon_old_data_in, 
 	mon_current_data_in; //={LA_DATA_INPUT_WORDLEN_BITS{1'b0}};
@@ -118,7 +119,7 @@ begin
 		bt_queue_tail_address <= 0;
 		mon_samples_after_trigger <= 0;
 		mon_clones_nr <= 1;
-	        last_tail<=0;
+//	        last_tail<=0;
 	        armed<=0;
   	        triggered<=0;
 	   
@@ -142,7 +143,7 @@ begin
 		   mon_samples_after_trigger <= next_mon_samples_after_trigger;
 		   mon_clones_nr <= next_mon_clones_nr;
 		   if (next_mon_state==MON_STATE_WAIT_TRIGGER_MATCH) begin
-		      last_tail<=mem_port_A_address;
+		      //		      last_tail<=mem_port_A_address; 
 		      armed<=1'b1;
 		   end
 	     end
@@ -266,7 +267,9 @@ begin
 			next_mon_clones_nr=2;
 // AAW this line is only right when there has been more than one repeat sample
 // so I'm changing it to explicit set it		   
-			next_bt_queue_tail_address = old_mon_write_address;
+//			next_bt_queue_tail_address = old_mon_write_address;
+// This is Duca's proposed fix -- seems like we tried this but maybe there was another issue?
+   			next_bt_queue_tail_address = mon_write_address; 		   
 			next_mon_samples_after_trigger=1;
 		end
 	end
@@ -300,9 +303,12 @@ begin
 			// Save bt_queue_tail_address
 			mem_port_A_address = LA_BT_QUEUE_TAIL_ADDRESS;
 // change to our expressly saved old value
-			mem_port_A_data_in =
-				{{(LA_MEM_WORDLEN_BITS-LA_MEM_ADDRESS_BITS){1'b0}}, 
-				  last_tail};
+//			mem_port_A_data_in =
+//				{{(LA_MEM_WORDLEN_BITS-LA_MEM_ADDRESS_BITS){1'b0}}, 
+//				  last_tail};
+// Duca original code
+	   mem_port_A_data_in={{(LA_MEM_WORDLEN_BITS-LA_MEM_ADDRESS_BITS){1'b0}},next_bt_queue_tail_address};
+	   
 			mem_port_A_wen = 1;
 			next_mon_state=MON_STATE_SC_RUN;
 	end
