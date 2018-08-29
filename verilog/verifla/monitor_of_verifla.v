@@ -72,7 +72,8 @@ reg armed, triggered;
 reg [MON_STATES_BITS-1:0] mon_state, next_mon_state;
 reg [LA_MAX_SAMPLES_AFTER_TRIGGER_BITS-1:0] 
 	next_mon_samples_after_trigger, mon_samples_after_trigger;
-   reg [LA_MEM_ADDRESS_BITS-1:0] 	    next_mon_write_address, mon_write_address, old_mon_write_address;
+   reg [LA_MEM_ADDRESS_BITS-1:0] 	    next_mon_write_address, mon_write_address;
+   
 //, last_tail,next_last_tail;
 reg [LA_MEM_ADDRESS_BITS-1:0] next_bt_queue_tail_address, bt_queue_tail_address;
 reg [LA_DATA_INPUT_WORDLEN_BITS-1:0] mon_old_data_in, 
@@ -114,7 +115,6 @@ begin
 	begin
 		mon_state <= MON_STATE_IDLE;
 		sc_run <= 0;
-		old_mon_write_address <= LA_MEM_FIRST_ADDR;
 		mon_write_address <= LA_MEM_FIRST_ADDR;
 		bt_queue_tail_address <= 0;
 		mon_samples_after_trigger <= 0;
@@ -137,7 +137,6 @@ begin
 	           sc_run <= next_sc_run;
 	            mon_state <= next_mon_state;
 
-		   old_mon_write_address <= mon_write_address;
 		   mon_write_address <= next_mon_write_address;
 		   bt_queue_tail_address <= next_bt_queue_tail_address;
 		   mon_samples_after_trigger <= next_mon_samples_after_trigger;
@@ -183,7 +182,7 @@ always @(*)
 	or mon_current_data_in or mon_old_data_in or mon_clones_nr
 	or data_in_changed or oneplus_mon_clones_nr or one_plus_mon_write_address
 	or not_maximum_mon_clones_nr
-	or last_mem_addr_before_trigger or old_mon_write_address)
+	or last_mem_addr_before_trigger)
 */
 begin
 	// implicit
@@ -265,10 +264,6 @@ begin
 			mem_port_A_wen=1;
 			next_mon_write_address=LA_TRIGGER_MATCH_MEM_ADDR;
 			next_mon_clones_nr=2;
-// AAW this line is only right when there has been more than one repeat sample
-// so I'm changing it to explicit set it		   
-//			next_bt_queue_tail_address = old_mon_write_address;
-// This is Duca's proposed fix -- seems like we tried this but maybe there was another issue?
    			next_bt_queue_tail_address = mon_write_address; 		   
 			next_mon_samples_after_trigger=1;
 		end

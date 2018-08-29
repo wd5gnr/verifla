@@ -1,5 +1,5 @@
 #!/bin/bash
-LADIR="./verifla"
+LADIR="./verifla"  # logic analyzer directory
 if [ -z "$1" ]
 then
   FN="demo"
