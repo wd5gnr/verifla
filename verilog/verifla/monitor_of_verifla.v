@@ -85,15 +85,16 @@ reg [LA_IDENTICAL_SAMPLES_BITS-1:0] mon_clones_nr, next_mon_clones_nr;
 
 // Register the input data
 // such that mon_current_data_in is constant the full clock period.
-always @(posedge clk or negedge rst_l)
+always @(posedge clk /* or negedge rst_l */ )
 begin
 	if(~rst_l)
 	begin
 		mon_old_data_in <= 0;
 		mon_current_data_in <= 0;
 // This line causes the state machine to hang when using Yosys/Arachne for ice40
-// Not sure why
-	    //    mon_run_reg<=0;
+// But ONLY if the reset is set synchronous
+// with negedge rst_l commented out in the always sensitivity it works fine	   
+	       mon_run_reg<=0;
 	   
 	   
 	end
@@ -109,7 +110,7 @@ begin
 end
 	
 // set new values
-always @(posedge clk or negedge rst_l)
+always @(posedge clk or negedge rst_l )
 begin
 	if(~rst_l)
 	begin
@@ -119,7 +120,6 @@ begin
 		bt_queue_tail_address <= 0;
 		mon_samples_after_trigger <= 0;
 		mon_clones_nr <= 1;
-//	        last_tail<=0;
 	        armed<=0;
   	        triggered<=0;
 	   
@@ -127,6 +127,7 @@ begin
 	end
 	else 
 	  begin
+	     
   	           if (next_mon_state==MON_STATE_AFTER_TRIGGER) triggered<=1'b1;
 	           if (next_mon_state==MON_STATE_IDLE) begin
 		      armed<=1'b0;

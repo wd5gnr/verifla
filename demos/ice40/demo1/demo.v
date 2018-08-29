@@ -3,11 +3,26 @@ module top(input clk, output LED1, output LED2, output LED3,
 	   output LED4, output LED5, output RS232_Tx, input RS232_Rx);
    reg [16:0] 	  count=0;
    wire 	  iclk;
-   reg 		  [3:0] laresetct=0;
    wire 		lareset;
- 		
+   reg 			por=1;
+   reg                  pordone=0;
 
-   assign lareset = laresetct==4'b0000 || laresetct==4'b1111;
+
+// Generate a low sync edge on power up
+// If you have a user reset you could and/or it in the following assign
+   assign lareset=por;
+   
+   always @(posedge clk)
+     if (pordone==1'b0)
+       if (por==1'b1)
+	 begin
+	    por<=1'b0;
+	 end
+       else
+	 begin
+	    por<=1'b1;
+	    pordone<=1'b1;
+	 end
 
    
    
@@ -22,8 +37,7 @@ module top(input clk, output LED1, output LED2, output LED3,
    assign LED2=subcount[4];
    assign LED3=subcount[5];
    assign LED4=subcount[6];
-   assign LED5=lareset;
-// subcount[7];
+   assign LED5=subcount[7];
 
    
 
@@ -46,7 +60,6 @@ module top(input clk, output LED1, output LED2, output LED3,
 			  .uart_XMIT_dataH(RS232_Tx),
 			  .uart_REC_dataH(RS232_Rx));
    
-   always @(posedge clk) if (laresetct!=4'b1111) laresetct<=laresetct+4'b0001;
      
    always @(posedge clk) count<={ 0, count[15:0]} +1;
    
