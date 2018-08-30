@@ -7,9 +7,11 @@ You do need a recent version of libserialport -- the one currently in Ubunut rep
    gcc -o la2vcd la2vcd.c -lserialport
 
 # Usage
-Usage: la2vcd [-B] [-W] [-F frequency] [-T timescale] -b baud, -t trigger_pos -c cap_width, -r repeat_width, -n samples -o vcd_file port_name
+Usage: la2vcd [-V] [-B] [-W] [-F frequency] [-T timescale] -b baud, -t trigger_pos -c cap_width, -r repeat_width, -n samples -o vcd_file port_name
 
 You need all the lower case options, although baud will default to 9600
+
+* -V show progress on console
 
 * -B output only bytes of capture
 
