@@ -12,17 +12,16 @@ revision date: 2007/Jul/4; author: Laurentiu DUCA
 
 // Note that many tools support default parameters
 // like input cqual=1'b1
-// If yours doesn't (e.g., Quartus even in SV mode, then use top_of_verifla_nodef
-
+// However, some (Quartus) seems to not allow this even when systemverilog
+// is selected
+// In that case you can use this top instead
 // You need to be sure to provide cqual, sys_run, trigqual, and exttrig
 // in your instance
-
-module top_of_verifla(input clk, input cqual=1'b1, input rst_l, input sys_run=1'b0, 
+module top_of_verifla_nodef(input clk, input cqual, input rst_l, input sys_run, 
 		      input [LA_DATA_INPUT_WORDLEN_BITS-1:0] data_in,
 		      output uart_XMIT_dataH, input uart_REC_dataH, 
-		      output armed, output triggered, input trigqual=1'b1,
-		      input exttrig=0 );
-
+		      output armed, output triggered, input trigqual,
+		      input exttrig );
 
 				
 `include "config_verifla.v"

@@ -24,11 +24,13 @@ A complete set of capture bytes and the associated repeat bytes are a line
 
 void help()
 {
-  fprintf(stderr,"Usage: la2vcd [-B] [-W] [-F frequency] [-T timescale] -b baud, -t trigger_pos -c cap_width, -r repeat_width, -n samples -o vcd_file port_name\n");
+  fprintf(stderr,"Usage: la2vcd [-B] [-W] [-V] [-F frequency] [-T timescale] -b baud, -t trigger_pos -c cap_width, -r repeat_width, -n samples -o vcd_file port_name\n");
   fprintf(stderr,"You need all the lower case options, although baud will default to 9600\n");
   fprintf(stderr,"-B output only bytes of capture\n-W output only words (default is both bytes and words)\n");
   fprintf(stderr,"-F sets frequency in MHz (e.g., -F 250).\n"
-	  "Or you can set the timescale (e.g, -T 1ns) with -T. Note the timescale should be twice the clock frequency. Default to 1nS and you do your own math.\n");
+	  "Or you can set the timescale (e.g, -T 1ns) with -T. Note the timescale should be twice the clock frequency. Default to 1nS and you do your own math.\n"
+	  "-V causes a console message when reading serial data\n"
+	  );
   fprintf(stderr,"Al Williams al.williams@awce.com\n");
   exit(1);
 }
@@ -118,6 +120,7 @@ int main(int argc, char *argv[])
   char *vcdfile=NULL;
   char *timescale="1ns";
   float freq=-1;
+  int verbose=0;
   
   unsigned char *workbuf;
   FILE *vfile;
@@ -133,9 +136,13 @@ int main(int argc, char *argv[])
     }
   
   // process command line
-  while ((copt=getopt(argc,argv,"DF:T:BWb:c:r:n:o:t:")) != -1)
+  while ((copt=getopt(argc,argv,"BDF:T:VWb:c:n:o:r:t:")) != -1)
     switch (copt)
       {
+      case 'V':
+	verbose=1;
+	break;
+	
       case 'D':
 	debugging=1;  // undocumented debug flag
 	break;
@@ -216,7 +223,7 @@ int main(int argc, char *argv[])
     err=sp_open(port,SP_MODE_READ_WRITE);
   if (err!=SP_OK)
     {
-      fprintf(stderr,"Can't open port %s\n",argv[1]);
+      fprintf(stderr,"Can't open port %s\n",argv[optind]);
       exit(2);
     }
   sp_set_baudrate(port,BAUD); 
@@ -227,20 +234,24 @@ int main(int argc, char *argv[])
   i=USERCMD_RUN;
   sp_blocking_write(port,&i,1,100);
   // read data (note data is backwards!)
-  for (i=0;i<count;i++)  
+  for (i=0;i<count;i++)
     {
       int waiting;
-      int c;
+      unsigned int c;
+      int n;
       do 
 	{
 	  waiting=sp_input_waiting(port);
-	} while (waiting<=0);
-      sp_nonblocking_read(port,(void *)&c,1);
-      workbuf[(count-1)-i]=c;
+	} while (waiting<=0); 
+      
+      if ((n=sp_nonblocking_read(port,(void *)&c,1))<0) fprintf(stderr,"Serial error: %s\n",sp_last_error_message());
+      if (verbose)
+	workbuf[(count-1)-i]=c;
     }
+  if (verbose) putchar('\n');
   sp_close(port);
 
-  if (debugging)
+  if (0 /*debugging */)
     {
       int q;
       FILE *dfile=fopen("debug.txt","w");

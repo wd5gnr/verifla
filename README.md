@@ -71,3 +71,15 @@ This will prompt you for a name so enter "counter8" and press OK. Now you'll hav
 
 Of course, this is painful to set up every time so use Write Save File on the File menu. This will save the layout for next time you load a VCD with the same format.
 
+# Note about Quartus and possibly other synthesis tools
+Quartus requires that you enable System Verilog for the config file parameters to work.
+
+Many synthesizers will accept module definitions like this:
+    module foo(input bar=1'b1);
+
+Quartus appears to not accept these even in System Verilog mode. To work around this
+you can use top_of_verifla_nodef instead of top_of_verifla_nodef. In this case,
+you need to provide inputs (even if constants) for sys_run, cqual, trigqual, and exttrig.
+
+The code has been lightly tested on an MAX10 FPGA and there will be examples in the demos
+folder soon.
