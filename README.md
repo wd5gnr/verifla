@@ -4,9 +4,9 @@ This is a fork of OpenVerifla (https://opencores.org/project/openverifla) that t
 1) Document some of the settings a bit better
 2) Fix a bug where samples that changed on one clock were not handled properly
 3) Add synchronous memory that is easier for some tools to infer
-4) Some minor cleanups and plans for enhancments
+4) Some minor cleanups and plans for enhancements
 5) C tool to read output and generate VCD directly (see C directory for build instructions)
-6) Adds clock enable/qualifer (defaults to 1 so you don't need to specify it if you don't use it)
+6) Adds clock enable/qualifier (defaults to 1 so you don't need to specify it if you don't use it)
 7) Adds armed and trigger outputs
 8) Adds trigger qualifier (must be 1 -- set by default -- for internal trigger to work)
 9) Adds exttrig (default 0) if you want your own trigger logic -- does not respect
@@ -16,7 +16,7 @@ Note on 6, 7, 8, and 9: The armed output goes high when the monitor state machin
 The triggered output goes high when something triggers the state machine. The data
 sample clock only reads a sample when the cqual, the clock qualifier, is 1 (the default).
 So if you know your circuit only does interesting things when counter==0 for example
-you can set that as the clock qualifer. You can drive exttrig to 1 if you want to
+you can set that as the clock qualifier. You can drive exttrig to 1 if you want to
 trigger with your own complex logic. For example, you could have a state machine
 read serial data and trigger when you see a certain serial character. For the internal
 trigger, you can inhibit it by setting trigqual to 0 (the default is 1). For example, you
@@ -46,7 +46,7 @@ with Icestorm tools (at least) setting memory to 256 bytes and the trigger posit
 6. Write your verilog in the project directory.
 7. Create a top_of_verifla module. Here are the signals:
 * clk - Clock
-* cqual - Qualifier for data capture clock (UART and other things use clk alone). If you don't want a qualifer, just set to 1'b1 (which is the default).
+* cqual - Qualifier for data capture clock (UART and other things use clk alone). If you don't want a qualifier, just set to 1'b1 (which is the default).
 * rst_l - Active low reset.
 * sys_run - High to arm logic analyzer. If you only want to arm from the PC, set to 1'b0.
 * data_in - Your inputs. Group together like {led3, led2, led1, led0, count[3:0]}.
@@ -60,7 +60,7 @@ with Icestorm tools (at least) setting memory to 256 bytes and the trigger posit
 8. Once running you can use the original Java program to create a .v file you will need to simulate or the C program (la2vcd) to create a .vcd you can read using a waveform viewer (like GTKWave)
 
 # Notes about using GTKWave
-The C program creates a simple dump that has the entire capture data and also each byte captured. You can supress the bytes (-W) or the aggregate (-B) if you like. However, you really want to have the signals broken back out like they are in your code.
+The C program creates a simple dump that has the entire capture data and also each byte captured. You can suppress the bytes (-W) or the aggregate (-B) if you like. However, you really want to have the signals broken back out like they are in your code.
 
 Suppose you have 16-bits of data like this:
    counter8[7:0], led0, state[6:0]
@@ -81,5 +81,5 @@ Quartus appears to not accept these even in System Verilog mode. To work around 
 you can use top_of_verifla_nodef instead of top_of_verifla_nodef. In this case,
 you need to provide inputs (even if constants) for sys_run, cqual, trigqual, and exttrig.
 
-The code has been lightly tested on an MAX10 FPGA and there will be examples in the demos
-folder soon.
+The code has been lightly tested on a MAX10 FPGA and there is an example in the demos
+folder.

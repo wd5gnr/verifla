@@ -24,12 +24,11 @@ A complete set of capture bytes and the associated repeat bytes are a line
 
 void help()
 {
-  fprintf(stderr,"Usage: la2vcd [-B] [-W] [-V] [-F frequency] [-T timescale] -b baud, -t trigger_pos -c cap_width, -r repeat_width, -n samples -o vcd_file port_name\n");
+  fprintf(stderr,"Usage: la2vcd [-B] [-W] [-F frequency] [-T timescale] -b baud, -t trigger_pos -c cap_width, -r repeat_width, -n samples -o vcd_file port_name\n");
   fprintf(stderr,"You need all the lower case options, although baud will default to 9600\n");
   fprintf(stderr,"-B output only bytes of capture\n-W output only words (default is both bytes and words)\n");
   fprintf(stderr,"-F sets frequency in MHz (e.g., -F 250).\n"
 	  "Or you can set the timescale (e.g, -T 1ns) with -T. Note the timescale should be twice the clock frequency. Default to 1nS and you do your own math.\n"
-	  "-V causes a console message when reading serial data\n"
 	  );
   fprintf(stderr,"Al Williams al.williams@awce.com\n");
   exit(1);
@@ -245,10 +244,8 @@ int main(int argc, char *argv[])
 	} while (waiting<=0); 
       
       if ((n=sp_nonblocking_read(port,(void *)&c,1))<0) fprintf(stderr,"Serial error: %s\n",sp_last_error_message());
-      if (verbose)
-	workbuf[(count-1)-i]=c;
+      workbuf[(count-1)-i]=c;
     }
-  if (verbose) putchar('\n');
   sp_close(port);
 
   if (0 /*debugging */)

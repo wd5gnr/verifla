@@ -16,20 +16,29 @@ module top(input clk, output LED1, output LED2, output LED3,
 
    assign lareset = (laresetct==4'b0000 || laresetct==4'b1111);
 
+/* From icepll 
+F_PLLIN:    12.000 MHz (given)
+F_PLLOUT:   48.000 MHz (requested)
+F_PLLOUT:   48.000 MHz (achieved)
+
+FEEDBACK: SIMPLE
+F_PFD:   12.000 MHz
+F_VCO:  768.000 MHz
+
+DIVR:  0 (4'b0000)
+DIVF: 63 (7'b0111111)
+DIVQ:  4 (3'b100)
+
+FILTER_RANGE: 1 (3'b001)
+*/
 
    SB_PLL40_CORE #(
 		   
-         .FEEDBACK_PATH("PHASE_AND_DELAY"),
-        .DELAY_ADJUSTMENT_MODE_FEEDBACK("FIXED"),
-        .DELAY_ADJUSTMENT_MODE_RELATIVE("FIXED"),
-        .PLLOUT_SELECT("SHIFTREG_0deg"),
-        .SHIFTREG_DIV_MODE(1'b0),
-        .FDA_FEEDBACK(4'b0000),
-        .FDA_RELATIVE(4'b0000),
+         .FEEDBACK_PATH("SIMPLE"),
         .DIVR(4'b0000),    // frequency divide 0+1 =1
-        .DIVF(7'b0000011), // frequency multiplier = 3+1 = 4  (48 Mhz)
-        .DIVQ(3'b000),     // not used in non-simple?
-        .FILTER_RANGE(3'b001))  // range 0-6 but not sure why?
+        .DIVF(7'b0111111), // frequency multiplier = 63+1 = 64  (768 Mhz)
+        .DIVQ(3'b100),     // divided by 16
+        .FILTER_RANGE(3'b001))  // range 
    pll(
        .REFERENCECLK(clk),
        .PLLOUTGLOBAL(iclk),

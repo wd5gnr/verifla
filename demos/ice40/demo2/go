@@ -6,12 +6,15 @@ then
 else
   FN="$1"
 fi
-if ! yosys -p "read_verilog $YOSYS_OPTS -noautowire \"$FN.v\" ; hierarchy -libdir . ; hierarchy -libdir $LADIR ; synth_ice40 -blif $FN.blif"
+# Note: LADIR ought to have quotes but that seems to annoy yosys so
+# no spaces in LADIR please
+if ! yosys -p "read_verilog $YOSYS_OPTS -noautowire \"$FN.v\" ; hierarchy -libdir . ; hierarchy -libdir $LADIR ; synth_ice40 -blif \"$FN.blif\""
 then exit
 fi
-if ! arachne-pnr $ARACHNE_OPTS -d 1k -p $FN.pcf  -o $FN.txt $FN.blif
+if ! arachne-pnr $ARACHNE_OPTS -d 1k -p "$FN.pcf"  -o "$FN.txt" "$FN.blif"
 then exit
 fi
+icetime -p "$FN.pcf" -d hx1k -mtr "$FN.rpt" "$FN.txt"
 icepack $FN.txt $FN.bin
 iceprog $FN.bin
 

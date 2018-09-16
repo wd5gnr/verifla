@@ -1,0 +1,7 @@
+{
+	"common_dir" : "/home/alw/fpga/max1000/max1000-tutorial/demo02_led_text/",
+	"acds_version" : "Version 17.1.1",
+	"platform" : "linux",
+	"os" : "KDE neon",
+	"qpf" : "test0.qpf"
+}
