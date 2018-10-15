@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
 	help();
 	break;
       }
-  
+  if (verbose) fprintf(stderr,"Verbose mode selected\n");
   // figure out how many bytes we have
   count=(capwidth+repwidth)*caplength;
   if (count<=0)
@@ -225,13 +225,16 @@ int main(int argc, char *argv[])
       fprintf(stderr,"Can't open port %s\n",argv[optind]);
       exit(2);
     }
+  if (verbose) fprintf(stderr,"Port open. Setting baud %d\n",BAUD);
   sp_set_baudrate(port,BAUD); 
   // write reset
   i=USERCMD_RESET;
   sp_blocking_write(port,&i,1,100);
+  if (verbose) fprintf(stderr,"Reset sent\n");
   // write run
   i=USERCMD_RUN;
   sp_blocking_write(port,&i,1,100);
+  if (verbose) fprintf(stderr,"Run sent\n");
   // read data (note data is backwards!)
   for (i=0;i<count;i++)
     {
@@ -242,8 +245,9 @@ int main(int argc, char *argv[])
 	{
 	  waiting=sp_input_waiting(port);
 	} while (waiting<=0); 
-      
+      if (verbose) fprintf(stderr,"Got some data...");      
       if ((n=sp_nonblocking_read(port,(void *)&c,1))<0) fprintf(stderr,"Serial error: %s\n",sp_last_error_message());
+      if (verbose) fprintf(stderr,"%d bytes\n",n);
       workbuf[(count-1)-i]=c;
     }
   sp_close(port);
